@@ -18,10 +18,12 @@ resource "ibm_is_subnet" "iac_iks_subnet" {
   zone                     = var.vpc_zone_names[count.index]
   vpc                      = ibm_is_vpc.iac_iks_vpc.id
   ipv4_cidr_block          = "172.26.${format("%01s", count.index)}.0/26"
+  public_gateway           = ibm_is_public_gateway.iac_iks_gateway.index
+  
   # total_ipv4_address_count = 64
   resource_group           = data.ibm_resource_group.group.id
   
-  depends_on  = [ibm_is_vpc_address_prefix.vpc_address_prefix]
+  depends_on  = [ibm_is_vpc_address_prefix.vpc_address_prefix, ibm_is_public_gateway.iac_iks_gateway]
 }
 
 resource "ibm_is_security_group_rule" "iac_iks_security_group_rule_tcp_k8s" {
